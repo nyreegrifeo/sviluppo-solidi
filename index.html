@@ -183,4 +183,1740 @@
       border: 3px dashed #75b9df;
       border-radius: 18px;
       background:
-   
+        linear-gradient(
+          rgba(105, 184, 225, 0.24) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(105, 184, 225, 0.24) 1px,
+          transparent 1px
+        ),
+        rgba(239, 250, 255, 0.96);
+      background-size: 50px 50px;
+      touch-action: none;
+    }
+
+    /* PANNELLO PEZZI */
+
+    #piecesPanel {
+      padding: 16px;
+    }
+
+    #piecesPanel p {
+      margin: 0 0 12px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    #piecesTray {
+      position: relative;
+      min-height: 500px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: #eff9ff;
+      touch-action: none;
+    }
+
+    /* PEZZI E OBIETTIVI */
+
+    .piece {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid #17486f;
+      border-radius: 8px;
+      color: #17324d;
+      font-size: 12px;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0 5px 10px rgba(30, 70, 100, 0.22);
+      cursor: grab;
+      touch-action: none;
+      z-index: 10;
+    }
+
+    .piece.dragging {
+      z-index: 1000;
+      cursor: grabbing;
+      opacity: 0.88;
+      transform: scale(1.04);
+    }
+
+    .target {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px dashed #579cca;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.55);
+      color: #579cca;
+      font-size: 11px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .target.filled {
+      border-color: #42a455;
+      background: rgba(210, 250, 218, 0.55);
+      color: transparent;
+    }
+
+    .triangle {
+      clip-path: polygon(50% 2%, 98% 96%, 2% 96%);
+      border-radius: 0;
+    }
+
+    .triangle.target {
+      border: 0;
+      outline: 3px dashed #579cca;
+      outline-offset: -6px;
+    }
+
+    .triangle.target.filled {
+      outline-color: #42a455;
+    }
+
+    /* ANTEPRIMA 3D */
+
+    #previewOverlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 16px;
+      background: rgba(231, 248, 255, 0.98);
+    }
+
+    #previewOverlay.visible {
+      display: flex;
+    }
+
+    #previewTitle {
+      margin: 0 0 12px;
+      color: #15508a;
+      text-align: center;
+    }
+
+    #threeContainer {
+      width: min(560px, 96%);
+      height: 420px;
+      overflow: hidden;
+      border: 3px solid white;
+      border-radius: 20px;
+      background: #dff4ff;
+      box-shadow: 0 12px 28px rgba(20, 70, 110, 0.22);
+    }
+
+    #closePreview {
+      width: auto;
+      min-width: 190px;
+      margin-top: 14px;
+      padding: 11px 24px;
+      background: #1769aa;
+    }
+
+    /* MESSAGGIO IN BASSO */
+
+    #message {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      z-index: 5000;
+      width: min(780px, 94%);
+      transform: translateX(-50%);
+      padding: 15px 22px;
+      border: 3px solid white;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.97);
+      box-shadow: 0 8px 25px rgba(20, 70, 110, 0.22);
+      font-size: 17px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    #message.success {
+      background: #dff8e4;
+      color: #176b2c;
+    }
+
+    #message.error {
+      background: #ffe3e3;
+      color: #9e2727;
+    }
+
+    #message.info {
+      background: #fff5cc;
+      color: #795900;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 1000px) {
+      #app {
+        grid-template-columns: 1fr;
+      }
+
+      #levelPanel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      #levelPanel h2,
+      #levelNumber,
+      #levelDescription,
+      #scoreBox,
+      #progressBox {
+        grid-column: 1 / -1;
+      }
+
+      #piecesTray {
+        min-height: 350px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      header {
+        padding: 12px 10px;
+      }
+
+      #app {
+        width: 98%;
+        gap: 10px;
+      }
+
+      #levelPanel,
+      #gamePanel,
+      #piecesPanel {
+        padding: 10px;
+        border-radius: 16px;
+      }
+
+      #board {
+        height: 450px;
+        overflow: auto;
+      }
+
+      #gamePanel {
+        min-height: 525px;
+      }
+
+      #message {
+        bottom: 7px;
+        padding: 11px;
+        font-size: 14px;
+      }
+
+      #threeContainer {
+        height: 340px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>🌟 Laboratorio delle forme 3D</h1>
+
+    <p>
+      Osserva, sperimenta e costruisci. Matematica, creatività
+      e immaginazione sono per tutte e tutti.
+    </p>
+  </header>
+
+  <main id="app">
+
+    <section id="levelPanel" class="panel">
+      <h2 id="levelTitle">Livello 1</h2>
+
+      <div id="levelNumber">
+        Sfida 1 di 4
+      </div>
+
+      <p id="levelDescription"></p>
+
+      <div id="scoreBox">
+        ⭐ Punti: <span id="score">0</span>
+      </div>
+
+      <div id="progressBox">
+        Pezzi posizionati:
+        <span id="pieceCounter">0 / 6</span>
+      </div>
+
+      <button id="foldButton">
+        ✨ PIEGA!
+      </button>
+
+      <button id="hintButton">
+        💡 MOSTRA UN AIUTO
+      </button>
+
+      <button id="resetButton">
+        ↻ RICOMINCIA
+      </button>
+
+      <button id="nextButton" disabled>
+        ➜ LIVELLO SUCCESSIVO
+      </button>
+    </section>
+
+    <section id="gamePanel" class="panel">
+      <h2>Area di costruzione</h2>
+
+      <div id="board"></div>
+
+      <div id="previewOverlay">
+        <h2 id="previewTitle">
+          Il solido costruito
+        </h2>
+
+        <div id="threeContainer"></div>
+
+        <button id="closePreview">
+          Torna al gioco
+        </button>
+      </div>
+    </section>
+
+    <section id="piecesPanel" class="panel">
+      <h2>Pezzi disponibili</h2>
+
+      <p>
+        Trascina ogni figura nello spazio tratteggiato
+        con la stessa forma e dimensione.
+      </p>
+
+      <div id="piecesTray"></div>
+    </section>
+
+  </main>
+
+  <div id="message">
+    Benvenuta e benvenuto! Inizia dalla prima sfida.
+  </div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from "three";
+
+    // ======================================================
+    // CONFIGURAZIONE DEI QUATTRO LIVELLI
+    // ======================================================
+
+    const levels = [
+      {
+        title: "🧊 Livello 1: il cubo",
+
+        description:
+          "Sistema i sei quadrati nello sviluppo piano del cubo.",
+
+        solid: "cube",
+
+        pieces: [
+          {
+            type: "square",
+            width: 64,
+            height: 64,
+            color: "#ff6b6b"
+          },
+          {
+            type: "square",
+            width: 64,
+            height: 64,
+            color: "#ffa94d"
+          },
+          {
+            type: "square",
+            width: 64,
+            height: 64,
+            color: "#ffd43b"
+          },
+          {
+            type: "square",
+            width: 64,
+            height: 64,
+            color: "#69db7c"
+          },
+          {
+            type: "square",
+            width: 64,
+            height: 64,
+            color: "#4dabf7"
+          },
+          {
+            type: "square",
+            width: 64,
+            height: 64,
+            color: "#b197fc"
+          }
+        ],
+
+        targets: [
+          {
+            x: 220,
+            y: 75,
+            width: 64,
+            height: 64,
+            type: "square"
+          },
+          {
+            x: 92,
+            y: 139,
+            width: 64,
+            height: 64,
+            type: "square"
+          },
+          {
+            x: 156,
+            y: 139,
+            width: 64,
+            height: 64,
+            type: "square"
+          },
+          {
+            x: 220,
+            y: 139,
+            width: 64,
+            height: 64,
+            type: "square"
+          },
+          {
+            x: 284,
+            y: 139,
+            width: 64,
+            height: 64,
+            type: "square"
+          },
+          {
+            x: 220,
+            y: 203,
+            width: 64,
+            height: 64,
+            type: "square"
+          }
+        ]
+      },
+
+      {
+        title: "📦 Livello 2: il parallelepipedo",
+
+        description:
+          "Osserva le dimensioni: servono due facce grandi, due facce lunghe e due facce laterali.",
+
+        solid: "box",
+
+        pieces: [
+          {
+            type: "large",
+            width: 128,
+            height: 84,
+            color: "#ff6b6b"
+          },
+          {
+            type: "large",
+            width: 128,
+            height: 84,
+            color: "#4dabf7"
+          },
+          {
+            type: "long",
+            width: 128,
+            height: 54,
+            color: "#69db7c"
+          },
+          {
+            type: "long",
+            width: 128,
+            height: 54,
+            color: "#ffa94d"
+          },
+          {
+            type: "side",
+            width: 84,
+            height: 54,
+            color: "#b197fc"
+          },
+          {
+            type: "side",
+            width: 84,
+            height: 54,
+            color: "#20c997"
+          }
+        ],
+
+        targets: [
+          {
+            x: 190,
+            y: 70,
+            width: 128,
+            height: 54,
+            type: "long"
+          },
+          {
+            x: 190,
+            y: 124,
+            width: 128,
+            height: 84,
+            type: "large"
+          },
+          {
+            x: 190,
+            y: 208,
+            width: 128,
+            height: 54,
+            type: "long"
+          },
+          {
+            x: 190,
+            y: 262,
+            width: 128,
+            height: 84,
+            type: "large"
+          },
+          {
+            x: 106,
+            y: 139,
+            width: 84,
+            height: 54,
+            type: "side"
+          },
+          {
+            x: 318,
+            y: 139,
+            width: 84,
+            height: 54,
+            type: "side"
+          }
+        ]
+      },
+
+      {
+        title: "🔺 Livello 3: il prisma triangolare",
+
+        description:
+          "Il prisma triangolare è formato da tre rettangoli e due triangoli.",
+
+        solid: "prism",
+
+        pieces: [
+          {
+            type: "prismRectangle",
+            width: 110,
+            height: 68,
+            color: "#ff6b6b"
+          },
+          {
+            type: "prismRectangle",
+            width: 110,
+            height: 68,
+            color: "#4dabf7"
+          },
+          {
+            type: "prismRectangle",
+            width: 110,
+            height: 68,
+            color: "#69db7c"
+          },
+          {
+            type: "prismTriangle",
+            width: 92,
+            height: 82,
+            color: "#ffd43b"
+          },
+          {
+            type: "prismTriangle",
+            width: 92,
+            height: 82,
+            color: "#b197fc"
+          }
+        ],
+
+        targets: [
+          {
+            x: 85,
+            y: 190,
+            width: 110,
+            height: 68,
+            type: "prismRectangle"
+          },
+          {
+            x: 195,
+            y: 190,
+            width: 110,
+            height: 68,
+            type: "prismRectangle"
+          },
+          {
+            x: 305,
+            y: 190,
+            width: 110,
+            height: 68,
+            type: "prismRectangle"
+          },
+          {
+            x: 204,
+            y: 108,
+            width: 92,
+            height: 82,
+            type: "prismTriangle"
+          },
+          {
+            x: 204,
+            y: 258,
+            width: 92,
+            height: 82,
+            type: "prismTriangle"
+          }
+        ]
+      },
+
+      {
+        title: "🏛️ Livello 4: la piramide",
+
+        description:
+          "Posiziona il quadrato al centro e i quattro triangoli intorno alla base.",
+
+        solid: "pyramid",
+
+        pieces: [
+          {
+            type: "pyramidSquare",
+            width: 100,
+            height: 100,
+            color: "#4dabf7"
+          },
+          {
+            type: "pyramidTriangle",
+            width: 100,
+            height: 92,
+            color: "#ff6b6b"
+          },
+          {
+            type: "pyramidTriangle",
+            width: 100,
+            height: 92,
+            color: "#ffa94d"
+          },
+          {
+            type: "pyramidTriangle",
+            width: 100,
+            height: 92,
+            color: "#69db7c"
+          },
+          {
+            type: "pyramidTriangle",
+            width: 100,
+            height: 92,
+            color: "#b197fc"
+          }
+        ],
+
+        targets: [
+          {
+            x: 205,
+            y: 190,
+            width: 100,
+            height: 100,
+            type: "pyramidSquare"
+          },
+          {
+            x: 205,
+            y: 98,
+            width: 100,
+            height: 92,
+            type: "pyramidTriangle"
+          },
+          {
+            x: 205,
+            y: 290,
+            width: 100,
+            height: 92,
+            type: "pyramidTriangle"
+          },
+          {
+            x: 105,
+            y: 194,
+            width: 100,
+            height: 92,
+            type: "pyramidTriangle"
+          },
+          {
+            x: 305,
+            y: 194,
+            width: 100,
+            height: 92,
+            type: "pyramidTriangle"
+          }
+        ]
+      }
+    ];
+
+    // ======================================================
+    // ELEMENTI DELLA PAGINA
+    // ======================================================
+
+    const board = document.getElementById("board");
+    const tray = document.getElementById("piecesTray");
+    const message = document.getElementById("message");
+
+    const levelTitle =
+      document.getElementById("levelTitle");
+
+    const levelNumber =
+      document.getElementById("levelNumber");
+
+    const levelDescription =
+      document.getElementById("levelDescription");
+
+    const scoreElement =
+      document.getElementById("score");
+
+    const pieceCounter =
+      document.getElementById("pieceCounter");
+
+    const foldButton =
+      document.getElementById("foldButton");
+
+    const hintButton =
+      document.getElementById("hintButton");
+
+    const resetButton =
+      document.getElementById("resetButton");
+
+    const nextButton =
+      document.getElementById("nextButton");
+
+    const previewOverlay =
+      document.getElementById("previewOverlay");
+
+    const previewTitle =
+      document.getElementById("previewTitle");
+
+    const closePreview =
+      document.getElementById("closePreview");
+
+    const threeContainer =
+      document.getElementById("threeContainer");
+
+    // ======================================================
+    // VARIABILI DEL GIOCO
+    // ======================================================
+
+    let currentLevel = 0;
+    let score = 0;
+    let levelCompleted = false;
+
+    let pieces = [];
+    let targets = [];
+
+    let draggedPiece = null;
+    let pointerOffsetX = 0;
+    let pointerOffsetY = 0;
+
+    // ======================================================
+    // CARICAMENTO DEI LIVELLI
+    // ======================================================
+
+    function loadLevel(levelIndex) {
+      currentLevel = levelIndex;
+      levelCompleted = false;
+
+      const level = levels[currentLevel];
+
+      levelTitle.textContent = level.title;
+
+      levelNumber.textContent =
+        `Sfida ${currentLevel + 1} di ${levels.length}`;
+
+      levelDescription.textContent =
+        level.description;
+
+      board.innerHTML = "";
+      tray.innerHTML = "";
+
+      pieces = [];
+      targets = [];
+
+      foldButton.disabled = false;
+      hintButton.disabled = false;
+      nextButton.disabled = true;
+
+      createTargets(level);
+      createPieces(level);
+      updateCounter();
+
+      showMessage(
+        "Trascina le figure negli spazi tratteggiati corrispondenti.",
+        ""
+      );
+    }
+
+    // ======================================================
+    // CREAZIONE DEGLI SPAZI TRATTEGGIATI
+    // ======================================================
+
+    function createTargets(level) {
+      level.targets.forEach((targetData, index) => {
+        const targetElement =
+          document.createElement("div");
+
+        targetElement.className = "target";
+
+        targetElement.dataset.index = index;
+        targetElement.dataset.type = targetData.type;
+
+        targetElement.style.left =
+          `${targetData.x}px`;
+
+        targetElement.style.top =
+          `${targetData.y}px`;
+
+        targetElement.style.width =
+          `${targetData.width}px`;
+
+        targetElement.style.height =
+          `${targetData.height}px`;
+
+        if (
+          targetData.type === "prismTriangle" ||
+          targetData.type === "pyramidTriangle"
+        ) {
+          targetElement.classList.add("triangle");
+        }
+
+        targetElement.textContent =
+          "Posiziona qui";
+
+        board.appendChild(targetElement);
+
+        targets.push({
+          element: targetElement,
+          data: targetData,
+          piece: null
+        });
+      });
+    }
+
+    // ======================================================
+    // CREAZIONE DEI PEZZI
+    // ======================================================
+
+    function createPieces(level) {
+      level.pieces.forEach((pieceData, index) => {
+        const pieceElement =
+          document.createElement("div");
+
+        pieceElement.className = "piece";
+
+        pieceElement.dataset.index = index;
+        pieceElement.dataset.type = pieceData.type;
+
+        pieceElement.style.width =
+          `${pieceData.width}px`;
+
+        pieceElement.style.height =
+          `${pieceData.height}px`;
+
+        pieceElement.style.background =
+          pieceData.color;
+
+        if (
+          pieceData.type === "prismTriangle" ||
+          pieceData.type === "pyramidTriangle"
+        ) {
+          pieceElement.classList.add("triangle");
+        }
+
+        const trayX =
+          12 + (index % 2) * 112;
+
+        const trayY =
+          18 + Math.floor(index / 2) * 138;
+
+        pieceElement.style.left =
+          `${trayX}px`;
+
+        pieceElement.style.top =
+          `${trayY}px`;
+
+        pieceElement.addEventListener(
+          "pointerdown",
+          startDragging
+        );
+
+        tray.appendChild(pieceElement);
+
+        pieces.push({
+          element: pieceElement,
+          data: pieceData,
+          targetIndex: null,
+          startX: trayX,
+          startY: trayY
+        });
+      });
+    }
+
+    // ======================================================
+    // INIZIO DEL TRASCINAMENTO
+    // ======================================================
+
+    function startDragging(event) {
+      if (levelCompleted) {
+        return;
+      }
+
+      const pieceElement = event.currentTarget;
+
+      const pieceIndex =
+        Number(pieceElement.dataset.index);
+
+      const pieceObject =
+        pieces[pieceIndex];
+
+      draggedPiece = pieceObject;
+
+      if (pieceObject.targetIndex !== null) {
+        const previousTarget =
+          targets[pieceObject.targetIndex];
+
+        previousTarget.piece = null;
+
+        previousTarget.element.classList.remove(
+          "filled"
+        );
+
+        pieceObject.targetIndex = null;
+
+        updateCounter();
+      }
+
+      const rectangle =
+        pieceElement.getBoundingClientRect();
+
+      pointerOffsetX =
+        event.clientX - rectangle.left;
+
+      pointerOffsetY =
+        event.clientY - rectangle.top;
+
+      document.body.appendChild(pieceElement);
+
+      pieceElement.style.position = "fixed";
+      pieceElement.style.left =
+        `${rectangle.left}px`;
+
+      pieceElement.style.top =
+        `${rectangle.top}px`;
+
+      pieceElement.classList.add("dragging");
+
+      pieceElement.setPointerCapture(
+        event.pointerId
+      );
+
+      pieceElement.addEventListener(
+        "pointermove",
+        moveDragging
+      );
+
+      pieceElement.addEventListener(
+        "pointerup",
+        stopDragging
+      );
+
+      pieceElement.addEventListener(
+        "pointercancel",
+        stopDragging
+      );
+
+      event.preventDefault();
+    }
+
+    // ======================================================
+    // MOVIMENTO DEL PEZZO
+    // ======================================================
+
+    function moveDragging(event) {
+      if (!draggedPiece) {
+        return;
+      }
+
+      draggedPiece.element.style.left =
+        `${event.clientX - pointerOffsetX}px`;
+
+      draggedPiece.element.style.top =
+        `${event.clientY - pointerOffsetY}px`;
+    }
+
+    // ======================================================
+    // FINE DEL TRASCINAMENTO
+    // ======================================================
+
+    function stopDragging(event) {
+      if (!draggedPiece) {
+        return;
+      }
+
+      const pieceObject = draggedPiece;
+      const pieceElement = pieceObject.element;
+
+      pieceElement.classList.remove("dragging");
+
+      pieceElement.removeEventListener(
+        "pointermove",
+        moveDragging
+      );
+
+      pieceElement.removeEventListener(
+        "pointerup",
+        stopDragging
+      );
+
+      pieceElement.removeEventListener(
+        "pointercancel",
+        stopDragging
+      );
+
+      try {
+        pieceElement.releasePointerCapture(
+          event.pointerId
+        );
+      } catch (error) {
+        // Il puntatore può essere già stato rilasciato.
+      }
+
+      const pieceRectangle =
+        pieceElement.getBoundingClientRect();
+
+      const centerX =
+        pieceRectangle.left +
+        pieceRectangle.width / 2;
+
+      const centerY =
+        pieceRectangle.top +
+        pieceRectangle.height / 2;
+
+      const matchingTarget =
+        findMatchingTarget(
+          centerX,
+          centerY,
+          pieceObject.data.type
+        );
+
+      if (matchingTarget) {
+        placePieceOnTarget(
+          pieceObject,
+          matchingTarget
+        );
+
+        showMessage(
+          "Ottimo posizionamento! Continua così.",
+          ""
+        );
+      } else {
+        returnPieceToTray(pieceObject);
+
+        showMessage(
+          "Questa figura non corrisponde allo spazio scelto. Osserva forma e dimensione.",
+          "info"
+        );
+      }
+
+      draggedPiece = null;
+      updateCounter();
+    }
+
+    // ======================================================
+    // RICERCA DI UNO SPAZIO COMPATIBILE
+    // ======================================================
+
+    function findMatchingTarget(
+      centerX,
+      centerY,
+      pieceType
+    ) {
+      for (
+        let index = 0;
+        index < targets.length;
+        index++
+      ) {
+        const target = targets[index];
+
+        if (target.piece !== null) {
+          continue;
+        }
+
+        if (target.data.type !== pieceType) {
+          continue;
+        }
+
+        const rectangle =
+          target.element.getBoundingClientRect();
+
+        const tolerance = 35;
+
+        const isInside =
+          centerX >= rectangle.left - tolerance &&
+          centerX <= rectangle.right + tolerance &&
+          centerY >= rectangle.top - tolerance &&
+          centerY <= rectangle.bottom + tolerance;
+
+        if (isInside) {
+          return {
+            object: target,
+            index: index
+          };
+        }
+      }
+
+      return null;
+    }
+
+    // ======================================================
+    // POSIZIONAMENTO SOPRA LO SPAZIO
+    // ======================================================
+
+    function placePieceOnTarget(
+      pieceObject,
+      matchingTarget
+    ) {
+      const target = matchingTarget.object;
+      const targetIndex = matchingTarget.index;
+
+      board.appendChild(pieceObject.element);
+
+      pieceObject.element.style.position =
+        "absolute";
+
+      pieceObject.element.style.left =
+        target.element.style.left;
+
+      pieceObject.element.style.top =
+        target.element.style.top;
+
+      pieceObject.element.style.width =
+        target.element.style.width;
+
+      pieceObject.element.style.height =
+        target.element.style.height;
+
+      pieceObject.targetIndex = targetIndex;
+
+      target.piece = pieceObject;
+
+      target.element.classList.add("filled");
+
+      updateCounter();
+    }
+
+    // ======================================================
+    // RITORNO DEL PEZZO NEL VASSOIO
+    // ======================================================
+
+    function returnPieceToTray(pieceObject) {
+      tray.appendChild(pieceObject.element);
+
+      pieceObject.element.style.position =
+        "absolute";
+
+      pieceObject.element.style.left =
+        `${pieceObject.startX}px`;
+
+      pieceObject.element.style.top =
+        `${pieceObject.startY}px`;
+
+      pieceObject.element.style.width =
+        `${pieceObject.data.width}px`;
+
+      pieceObject.element.style.height =
+        `${pieceObject.data.height}px`;
+
+      pieceObject.targetIndex = null;
+    }
+
+    // ======================================================
+    // CONTATORE DEI PEZZI
+    // ======================================================
+
+    function updateCounter() {
+      const placedPieces =
+        targets.filter(
+          (target) => target.piece !== null
+        ).length;
+
+      pieceCounter.textContent =
+        `${placedPieces} / ${targets.length}`;
+    }
+
+    // ======================================================
+    // VERIFICA DEL LIVELLO
+    // ======================================================
+
+    function checkLevel() {
+      if (levelCompleted) {
+        return;
+      }
+
+      const missingTargets =
+        targets.filter(
+          (target) => target.piece === null
+        ).length;
+
+      if (missingTargets > 0) {
+        showMessage(
+          `Mancano ancora ${missingTargets} ${
+            missingTargets === 1
+              ? "figura"
+              : "figure"
+          }. Continua a sperimentare!`,
+          "error"
+        );
+
+        shakeBoard();
+        return;
+      }
+
+      levelCompleted = true;
+      score += 100;
+
+      scoreElement.textContent = score;
+
+      foldButton.disabled = true;
+      hintButton.disabled = true;
+
+      if (currentLevel < levels.length - 1) {
+        nextButton.disabled = false;
+      }
+
+      showMessage(
+        "🎉 Missione completata! Hai costruito correttamente lo sviluppo piano del solido.",
+        "success"
+      );
+
+      showSolid(levels[currentLevel].solid);
+    }
+
+    // ======================================================
+    // PULSANTE AIUTO
+    // ======================================================
+
+    function showHint() {
+      if (levelCompleted) {
+        return;
+      }
+
+      const emptyTargetIndex =
+        targets.findIndex(
+          (target) => target.piece === null
+        );
+
+      if (emptyTargetIndex === -1) {
+        showMessage(
+          "Tutte le figure sono posizionate. Ora premi Piega!",
+          "info"
+        );
+
+        return;
+      }
+
+      const target =
+        targets[emptyTargetIndex];
+
+      const matchingPiece =
+        pieces.find(
+          (piece) =>
+            piece.targetIndex === null &&
+            piece.data.type === target.data.type
+        );
+
+      if (!matchingPiece) {
+        return;
+      }
+
+      placePieceOnTarget(
+        matchingPiece,
+        {
+          object: target,
+          index: emptyTargetIndex
+        }
+      );
+
+      showMessage(
+        "💡 Ho posizionato una figura. Ora prova a continuare senza aiuto.",
+        "info"
+      );
+    }
+
+    // ======================================================
+    // RESET DEL LIVELLO
+    // ======================================================
+
+    function resetCurrentLevel() {
+      closeThreePreview();
+      loadLevel(currentLevel);
+    }
+
+    // ======================================================
+    // LIVELLO SUCCESSIVO
+    // ======================================================
+
+    function goToNextLevel() {
+      if (!levelCompleted) {
+        return;
+      }
+
+      closeThreePreview();
+
+      if (currentLevel < levels.length - 1) {
+        loadLevel(currentLevel + 1);
+      }
+    }
+
+    // ======================================================
+    // MESSAGGI
+    // ======================================================
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = type || "";
+    }
+
+    function shakeBoard() {
+      const originalTransform =
+        board.style.transform;
+
+      let count = 0;
+
+      const interval =
+        setInterval(() => {
+          board.style.transform =
+            count % 2 === 0
+              ? "translateX(-7px)"
+              : "translateX(7px)";
+
+          count++;
+
+          if (count > 7) {
+            clearInterval(interval);
+
+            board.style.transform =
+              originalTransform;
+          }
+        }, 55);
+    }
+
+    // ======================================================
+    // THREE.JS
+    // ======================================================
+
+    let renderer = null;
+    let scene = null;
+    let camera = null;
+    let solidGroup = null;
+    let animationId = null;
+
+    const solidColors = [
+      0xff6b6b,
+      0xffa94d,
+      0xffd43b,
+      0x69db7c,
+      0x4dabf7,
+      0xb197fc
+    ];
+
+    function initializeThree() {
+      stopThreePreview();
+
+      scene = new THREE.Scene();
+
+      scene.background =
+        new THREE.Color(0xdff4ff);
+
+      camera =
+        new THREE.PerspectiveCamera(
+          45,
+          threeContainer.clientWidth /
+            threeContainer.clientHeight,
+          0.1,
+          100
+        );
+
+      camera.position.set(5, 4, 7);
+      camera.lookAt(0, 0, 0);
+
+      renderer =
+        new THREE.WebGLRenderer({
+          antialias: true
+        });
+
+      renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 2)
+      );
+
+      renderer.setSize(
+        threeContainer.clientWidth,
+        threeContainer.clientHeight
+      );
+
+      threeContainer.innerHTML = "";
+
+      threeContainer.appendChild(
+        renderer.domElement
+      );
+
+      const ambientLight =
+        new THREE.AmbientLight(
+          0xffffff,
+          1.8
+        );
+
+      scene.add(ambientLight);
+
+      const directionalLight =
+        new THREE.DirectionalLight(
+          0xffffff,
+          2.3
+        );
+
+      directionalLight.position.set(
+        5,
+        7,
+        8
+      );
+
+      scene.add(directionalLight);
+
+      solidGroup = new THREE.Group();
+
+      scene.add(solidGroup);
+    }
+
+    function createMaterials(number) {
+      const materials = [];
+
+      for (
+        let index = 0;
+        index < number;
+        index++
+      ) {
+        materials.push(
+          new THREE.MeshPhongMaterial({
+            color:
+              solidColors[
+                index % solidColors.length
+              ],
+            shininess: 45,
+            side: THREE.DoubleSide
+          })
+        );
+      }
+
+      return materials;
+    }
+
+    function addEdges(mesh, geometry) {
+      const edgesGeometry =
+        new THREE.EdgesGeometry(geometry);
+
+      const edgesMaterial =
+        new THREE.LineBasicMaterial({
+          color: 0x17324d
+        });
+
+      const edges =
+        new THREE.LineSegments(
+          edgesGeometry,
+          edgesMaterial
+        );
+
+      mesh.add(edges);
+    }
+
+    function createCube() {
+      const geometry =
+        new THREE.BoxGeometry(3, 3, 3);
+
+      const mesh =
+        new THREE.Mesh(
+          geometry,
+          createMaterials(6)
+        );
+
+      addEdges(mesh, geometry);
+
+      solidGroup.add(mesh);
+    }
+
+    function createBox() {
+      const geometry =
+        new THREE.BoxGeometry(
+          4.2,
+          2.2,
+          2.8
+        );
+
+      const mesh =
+        new THREE.Mesh(
+          geometry,
+          createMaterials(6)
+        );
+
+      addEdges(mesh, geometry);
+
+      solidGroup.add(mesh);
+    }
+
+    function createTriangularPrism() {
+      const shape = new THREE.Shape();
+
+      shape.moveTo(-1.6, -1.1);
+      shape.lineTo(1.6, -1.1);
+      shape.lineTo(0, 1.5);
+      shape.closePath();
+
+      const geometry =
+        new THREE.ExtrudeGeometry(
+          shape,
+          {
+            depth: 3,
+            bevelEnabled: false
+          }
+        );
+
+      geometry.center();
+
+      const mesh =
+        new THREE.Mesh(
+          geometry,
+          createMaterials(5)
+        );
+
+      addEdges(mesh, geometry);
+
+      mesh.rotation.y = 0.35;
+
+      solidGroup.add(mesh);
+    }
+
+    function createPyramid() {
+      const geometry =
+        new THREE.ConeGeometry(
+          2.2,
+          3.6,
+          4,
+          1,
+          false,
+          Math.PI / 4
+        );
+
+      const mesh =
+        new THREE.Mesh(
+          geometry,
+          createMaterials(5)
+        );
+
+      addEdges(mesh, geometry);
+
+      solidGroup.add(mesh);
+    }
+
+    function showSolid(solidType) {
+      previewOverlay.classList.add(
+        "visible"
+      );
+
+      previewTitle.textContent =
+        "✨ Osserva il solido costruito";
+
+      initializeThree();
+
+      if (solidType === "cube") {
+        createCube();
+      }
+
+      if (solidType === "box") {
+        createBox();
+      }
+
+      if (solidType === "prism") {
+        createTriangularPrism();
+      }
+
+      if (solidType === "pyramid") {
+        createPyramid();
+      }
+
+      solidGroup.scale.set(
+        0.05,
+        0.05,
+        0.05
+      );
+
+      animateThree();
+    }
+
+    function animateThree() {
+      animationId =
+        requestAnimationFrame(
+          animateThree
+        );
+
+      if (solidGroup) {
+        solidGroup.scale.x +=
+          (1 - solidGroup.scale.x) *
+          0.055;
+
+        solidGroup.scale.y +=
+          (1 - solidGroup.scale.y) *
+          0.055;
+
+        solidGroup.scale.z +=
+          (1 - solidGroup.scale.z) *
+          0.055;
+
+        solidGroup.rotation.y += 0.009;
+
+        solidGroup.rotation.x =
+          Math.sin(
+            performance.now() * 0.0008
+          ) * 0.12;
+      }
+
+      renderer.render(
+        scene,
+        camera
+      );
+    }
+
+    function stopThreePreview() {
+      if (animationId !== null) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+
+      if (renderer) {
+        renderer.dispose();
+
+        if (
+          renderer.domElement &&
+          renderer.domElement.parentNode
+        ) {
+          renderer.domElement.parentNode.removeChild(
+            renderer.domElement
+          );
+        }
+      }
+
+      renderer = null;
+      scene = null;
+      camera = null;
+      solidGroup = null;
+    }
+
+    function closeThreePreview() {
+      previewOverlay.classList.remove(
+        "visible"
+      );
+
+      stopThreePreview();
+    }
+
+    function resizeThreePreview() {
+      if (!renderer || !camera) {
+        return;
+      }
+
+      const width =
+        threeContainer.clientWidth;
+
+      const height =
+        threeContainer.clientHeight;
+
+      camera.aspect = width / height;
+
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(
+        width,
+        height
+      );
+    }
+
+    // ======================================================
+    // EVENTI DEI PULSANTI
+    // ======================================================
+
+    foldButton.addEventListener(
+      "click",
+      checkLevel
+    );
+
+    hintButton.addEventListener(
+      "click",
+      showHint
+    );
+
+    resetButton.addEventListener(
+      "click",
+      resetCurrentLevel
+    );
+
+    nextButton.addEventListener(
+      "click",
+      goToNextLevel
+    );
+
+    closePreview.addEventListener(
+      "click",
+      () => {
+        closeThreePreview();
+
+        if (
+          levelCompleted &&
+          currentLevel ===
+            levels.length - 1
+        ) {
+          showMessage(
+            "🏆 Hai completato tutte le sfide! Curiosità, creatività e pratica aiutano a sviluppare le competenze spaziali.",
+            "success"
+          );
+        } else if (levelCompleted) {
+          showMessage(
+            "⭐ Livello completato! Ora puoi passare alla sfida successiva.",
+            "success"
+          );
+        }
+      }
+    );
+
+    window.addEventListener(
+      "resize",
+      resizeThreePreview
+    );
+
+    // ======================================================
+    // AVVIO DEL GIOCO
+    // ======================================================
+
+    scoreElement.textContent = score;
+
+    loadLevel(0);
+  </script>
+
+</body>
+</html>
