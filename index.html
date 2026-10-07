@@ -543,101 +543,85 @@
       },
 
       {
-        title: "🏛️ Costruisci la piramide",
-        description:
-          "Posiziona il quadrato al centro e i quattro triangoli intorno alla base.",
-        solid: "pyramid",
-
-        pieces: [
-          { type: "pyramid-square", width: 100, height: 100, color: "#4dabf7" },
-          { type: "pyramid-triangle", width: 100, height: 92, color: "#ff6b6b" },
-          { type: "pyramid-triangle", width: 100, height: 92, color: "#ffa94d" },
-          { type: "pyramid-triangle", width: 100, height: 92, color: "#69db7c" },
-          { type: "pyramid-triangle", width: 100, height: 92, color: "#b197fc" }
-        ],
-
-        targets: [
-          { x: 205, y: 190, width: 100, height: 100, type: "pyramid-square" },
-          { x: 205, y: 98, width: 100, height: 92, type: "pyramid-triangle" },
-          { x: 205, y: 290, width: 100, height: 92, type: "pyramid-triangle" },
-          { x: 105, y: 194, width: 100, height: 92, type: "pyramid-triangle" },
-          { x: 305, y: 194, width: 100, height: 92, type: "pyramid-triangle" }
-        ]
-      }
-    ];
-
-    // ========================================================
-    // VARIABILI GENERALI
-    // ========================================================
-
-    const board = document.getElementById("board");
-    const tray = document.getElementById("piecesTray");
-    const message = document.getElementById("message");
-
-    const levelTitle = document.getElementById("levelTitle");
-    const levelNumber = document.getElementById("levelNumber");
-    const levelDescription =
-      document.getElementById("levelDescription");
-
-    const scoreElement = document.getElementById("score");
-
-    const foldButton = document.getElementById("foldButton");
-    const hintButton = document.getElementById("hintButton");
-    const resetButton = document.getElementById("resetButton");
-    const nextButton = document.getElementById("nextButton");
-
-    const previewOverlay =
-      document.getElementById("previewOverlay");
-
-    const closePreview =
-      document.getElementById("closePreview");
-
-    let currentLevel = 0;
-    let score = 0;
-    let levelCompleted = false;
-
-    let pieces = [];
-    let targets = [];
-
-    let draggedPiece = null;
-    let pointerOffsetX = 0;
-    let pointerOffsetY = 0;
-
-    // ========================================================
-    // AVVIO E CREAZIONE DEL LIVELLO
-    // ========================================================
-
-    function loadLevel(levelIndex) {
-      currentLevel = levelIndex;
-      levelCompleted = false;
-
-      const level = levels[currentLevel];
-
-      levelTitle.textContent = level.title;
-      levelNumber.textContent =
-        `Sfida ${currentLevel + 1} di ${levels.length}`;
-
-      levelDescription.textContent = level.description;
-
-      board.innerHTML = "";
-      tray.innerHTML = "";
-
-      pieces = [];
-      targets = [];
-
-      nextButton.disabled = true;
-      foldButton.disabled = false;
-      hintButton.disabled = false;
-
-      createTargets(level);
-      createPieces(level);
-
-      showMessage(
-        "Trascina ogni figura nello spazio tratteggiato corrispondente.",
-        ""
-      );
-    }
-
+title: "🏛️ Costruisci la piramide",
+description:
+"Posiziona il quadrato al centro e i quattro triangoli intorno alla base.",
+solid: "pyramid",
+ 
+pieces: [
+{
+type: "pyramid-square",
+width: 100,
+height: 100,
+color: "#4dabf7",
+label: "BASE"
+},
+{
+type: "pyramid-top",
+width: 100,
+height: 92,
+color: "#ff6b6b"
+},
+{
+type: "pyramid-bottom",
+width: 100,
+height: 92,
+color: "#ffa94d"
+},
+{
+type: "pyramid-left",
+width: 92,
+height: 100,
+color: "#69db7c"
+},
+{
+type: "pyramid-right",
+width: 92,
+height: 100,
+color: "#b197fc"
+}
+],
+ 
+targets: [
+{
+x: 205,
+y: 190,
+width: 100,
+height: 100,
+type: "pyramid-square",
+label: "BASE"
+},
+{
+x: 205,
+y: 98,
+width: 100,
+height: 92,
+type: "pyramid-top"
+},
+{
+x: 205,
+y: 290,
+width: 100,
+height: 92,
+type: "pyramid-bottom"
+},
+{
+x: 113,
+y: 190,
+width: 92,
+height: 100,
+type: "pyramid-left"
+},
+{
+x: 305,
+y: 190,
+width: 92,
+height: 100,
+type: "pyramid-right"
+}
+]
+}
+     
     // ========================================================
     // CREAZIONE DEGLI SPAZI OBIETTIVO
     // ========================================================
